@@ -1,62 +1,59 @@
 import React from 'react';
-import { Platform, StatusBar, StyleSheet, View } from 'react-native';
-import { AppLoading, Asset, Font, Icon } from 'expo';
-import AppNavigator from './navigation/AppNavigator';
+import { StyleSheet, Text, View, StatusBar, TextInput, Dimensions, Platform } from 'react-native';
+
+const {height, width} = Dimensions.get("window");
 
 export default class App extends React.Component {
-  state = {
-    isLoadingComplete: false,
-  };
-
   render() {
-    if (!this.state.isLoadingComplete && !this.props.skipLoadingScreen) {
-      return (
-        <AppLoading
-          startAsync={this._loadResourcesAsync}
-          onError={this._handleLoadingError}
-          onFinish={this._handleFinishLoading}
-        />
-      );
-    } else {
-      return (
-        <View style={styles.container}>
-          {Platform.OS === 'ios' && <StatusBar barStyle="default" />}
-          <AppNavigator />
+    return (
+      <View style={styles.container}>
+        <StatusBar barStyle="light-content" />
+        <Text style={styles.title}>Kawai To Do</Text>
+        <View style={styles.card}>
+          <TextInput style={styles.input} placeholder={"New To Do"}/>
         </View>
-      );
-    }
+
+      </View>
+    );
   }
-
-  _loadResourcesAsync = async () => {
-    return Promise.all([
-      Asset.loadAsync([
-        require('./assets/images/robot-dev.png'),
-        require('./assets/images/robot-prod.png'),
-      ]),
-      Font.loadAsync({
-        // This is the font that we are using for our tab bar
-        ...Icon.Ionicons.font,
-        // We include SpaceMono because we use it in HomeScreen.js. Feel free
-        // to remove this if you are not using it in your app
-        'space-mono': require('./assets/fonts/SpaceMono-Regular.ttf'),
-      }),
-    ]);
-  };
-
-  _handleLoadingError = error => {
-    // In this case, you might want to report the error to your error
-    // reporting service, for example Sentry
-    console.warn(error);
-  };
-
-  _handleFinishLoading = () => {
-    this.setState({ isLoadingComplete: true });
-  };
 }
 
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#fff',
+    backgroundColor: '#F23657',
+    alignItems : "center",
   },
+  title : {
+    color : "white",
+    fontSize:30,
+    marginTop:50,
+    fontWeight:"200",
+    marginBottom: 30
+  },
+  input : {},
+  card:{
+    backgroundColor:"white",
+    flex: 1,
+    width: width - 30,
+    borderTopLeftRadius: 10,
+    borderTopRightRadius : 10,
+    ...Platform.select(
+      {
+        ios:{
+          shadowColor:"rgb(50,50,50)",
+          shadowOpacity:0.5,
+          shadowRadius: 5,
+          shadowOffset:{
+            height: -1,
+            width: 0
+          }
+        },
+        android : {
+          elevation : 3
+        }
+      }
+    )
+  }
+
 });
